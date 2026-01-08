@@ -7,3 +7,4 @@ ARG RAILWAY_STATIC_URL
 ARG PUBLIC_URL
 ARG PORT
 CMD ["npm", "run", "start"]
+RUN next build
