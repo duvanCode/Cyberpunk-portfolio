@@ -36,6 +36,7 @@ export const NeonButton = forwardRef<HTMLButtonElement, NeonButtonProps>(
           variantStyles[variant],
           sizeStyles[size],
           className,
+          "flex items-center justify-center"
         )}
         {...props}
       >

@@ -6,11 +6,32 @@ import { NeonButton } from "@/components/ui/neon-button"
 import { useEffect, useState } from "react"
 import { ChevronDown, Mail } from "lucide-react"
 
+// Generar posiciones fijas para evitar hydration mismatch
+const NEURAL_LINES = Array.from({ length: 20 }).map((_, i) => ({
+  id: i,
+  x1: (i * 7 + 13) % 100,
+  y1: (i * 11 + 23) % 100,
+  x2: (i * 13 + 37) % 100,
+  y2: (i * 17 + 41) % 100,
+  delay: i * 0.2,
+}))
+
+const FLOATING_PARTICLES = Array.from({ length: 15 }).map((_, i) => ({
+  id: i,
+  left: (i * 13 + 17) % 100,
+  top: (i * 19 + 29) % 100,
+  opacity: 0.2 + (i % 5) * 0.1,
+  duration: 3 + (i % 4),
+  delay: (i % 3) * 0.7,
+}))
+
 export function Hero() {
   const [typedText, setTypedText] = useState("")
+  const [mounted, setMounted] = useState(false)
   const fullText = personalInfo.subtitle
 
   useEffect(() => {
+    setMounted(true)
     let index = 0
     const timer = setInterval(() => {
       if (index <= fullText.length) {
@@ -35,25 +56,31 @@ export function Hero() {
             </pattern>
           </defs>
           <rect width="100%" height="100%" fill="url(#neural-grid)" />
-          {/* Animated connection lines */}
-          {Array.from({ length: 20 }).map((_, i) => (
+          {/* Animated connection lines - Fixed positions */}
+          {NEURAL_LINES.map((line) => (
             <line
-              key={i}
-              x1={`${Math.random() * 100}%`}
-              y1={`${Math.random() * 100}%`}
-              x2={`${Math.random() * 100}%`}
-              y2={`${Math.random() * 100}%`}
+              key={line.id}
+              x1={`${line.x1}%`}
+              y1={`${line.y1}%`}
+              x2={`${line.x2}%`}
+              y2={`${line.y2}%`}
               stroke="#00f0ff"
               strokeWidth="0.5"
               opacity="0.2"
               className="animate-pulse"
-              style={{ animationDelay: `${i * 0.2}s` }}
+              style={{ animationDelay: `${line.delay}s` }}
             />
           ))}
         </svg>
       </div>
 
       <div className="relative z-10 text-center max-w-4xl mx-auto">
+
+        {/* Scroll Indicator */}
+        <div className="flex justify-center animate-bounce">
+          <ChevronDown className="w-8 h-8 text-[#00f0ff]" />
+        </div>
+
         {/* Avatar with Neon Border */}
         <div className="relative w-40 h-40 mx-auto mb-8">
           <div
@@ -107,28 +134,26 @@ export function Hero() {
           </NeonButton>
         </div>
 
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
-          <ChevronDown className="w-8 h-8 text-[#00f0ff]" />
-        </div>
       </div>
 
-      {/* Floating particles */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {Array.from({ length: 15 }).map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-2 h-2 rounded-full bg-[#00f0ff]"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              opacity: Math.random() * 0.5 + 0.2,
-              animation: `float ${3 + Math.random() * 4}s ease-in-out infinite`,
-              animationDelay: `${Math.random() * 2}s`,
-            }}
-          />
-        ))}
-      </div>
+      {/* Floating particles - Fixed positions */}
+      {mounted && (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          {FLOATING_PARTICLES.map((particle) => (
+            <div
+              key={particle.id}
+              className="absolute w-2 h-2 rounded-full bg-[#00f0ff]"
+              style={{
+                left: `${particle.left}%`,
+                top: `${particle.top}%`,
+                opacity: particle.opacity,
+                animation: `float ${particle.duration}s ease-in-out infinite`,
+                animationDelay: `${particle.delay}s`,
+              }}
+            />
+          ))}
+        </div>
+      )}
     </section>
   )
 }
