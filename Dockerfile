@@ -6,5 +6,5 @@ COPY . .
 ARG RAILWAY_STATIC_URL
 ARG PUBLIC_URL
 ARG PORT
+RUN npm run build
 CMD ["npm", "run", "start"]
-RUN next build
