@@ -16,7 +16,7 @@ export const education: Education[] = [
     institution: "Universidad de Cartagena",
     location: "Cartagena, Bolívar",
     status: "En curso",
-    startYear: "2020",
+    startYear: "2023",
     endYear: "Presente",
     description: "Formación profesional en desarrollo de software y sistemas",
   },

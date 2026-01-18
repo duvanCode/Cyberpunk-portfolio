@@ -85,7 +85,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
           onClick={() => setIsExpanded(false)}
         >
           <div
-            className="relative max-w-3xl w-full max-h-[90vh] overflow-y-auto rounded-lg border border-[#00f0ff]/30 bg-[#1a1a2e] shadow-[0_0_50px_rgba(0,240,255,0.3)]"
+            className="relative max-w-4xl w-full max-h-[80vh] overflow-y-auto rounded-lg border border-[#00f0ff]/30 bg-[#1a1a2e] shadow-[0_0_50px_rgba(0,240,255,0.3)]"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close Button */}
