@@ -2,12 +2,14 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { personalInfo } from "@/data/personal-info"
 import { references } from "@/data/education"
 import { TerminalCard } from "@/components/ui/terminal-card"
 import { NeonButton } from "@/components/ui/neon-button"
-import { Send, Linkedin, Github, Mail, Phone, User, MessageSquare } from "lucide-react"
+import { Send, Linkedin, Github, Mail, Phone, User, MessageSquare, CheckCircle, XCircle } from "lucide-react"
+
+type SubmitStatus = "idle" | "success" | "error"
 
 export function Contact() {
   const [formData, setFormData] = useState({
@@ -16,17 +18,61 @@ export function Contact() {
     message: "",
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [csrfToken, setCsrfToken] = useState<string>("")
+  const [submitStatus, setSubmitStatus] = useState<SubmitStatus>("idle")
+  const [statusMessage, setStatusMessage] = useState("")
+
+  useEffect(() => {
+    const fetchCsrfToken = async () => {
+      try {
+        const response = await fetch("/api/csrf")
+        const data = await response.json()
+        setCsrfToken(data.csrfToken)
+      } catch (error) {
+        console.error("Failed to fetch CSRF token:", error)
+      }
+    }
+
+    fetchCsrfToken()
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setSubmitStatus("idle")
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...formData,
+          csrfToken,
+        }),
+      })
 
-    alert("¡Mensaje enviado! Te contactaré pronto.")
-    setFormData({ name: "", email: "", message: "" })
-    setIsSubmitting(false)
+      const data = await response.json()
+
+      if (response.ok) {
+        setSubmitStatus("success")
+        setStatusMessage("¡Mensaje enviado! Te contactaré pronto.")
+        setFormData({ name: "", email: "", message: "" })
+        // Refresh CSRF token after successful submission
+        const csrfResponse = await fetch("/api/csrf")
+        const csrfData = await csrfResponse.json()
+        setCsrfToken(csrfData.csrfToken)
+      } else {
+        setSubmitStatus("error")
+        setStatusMessage(data.error || "Error al enviar el mensaje")
+      }
+    } catch (error) {
+      setSubmitStatus("error")
+      setStatusMessage("Error de conexión. Intenta más tarde.")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -88,7 +134,7 @@ export function Contact() {
                 />
               </div>
 
-              <NeonButton type="submit" variant="cyan" size="lg" className="w-full" disabled={isSubmitting}>
+              <NeonButton type="submit" variant="cyan" size="lg" className="w-full" disabled={isSubmitting || !csrfToken}>
                 {isSubmitting ? (
                   <>
                     <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin mr-2" />
@@ -101,6 +147,23 @@ export function Contact() {
                   </>
                 )}
               </NeonButton>
+
+              {submitStatus !== "idle" && (
+                <div
+                  className={`flex items-center gap-2 p-3 rounded-lg font-mono text-sm ${
+                    submitStatus === "success"
+                      ? "bg-green-500/10 border border-green-500/30 text-green-400"
+                      : "bg-red-500/10 border border-red-500/30 text-red-400"
+                  }`}
+                >
+                  {submitStatus === "success" ? (
+                    <CheckCircle className="w-5 h-5" />
+                  ) : (
+                    <XCircle className="w-5 h-5" />
+                  )}
+                  {statusMessage}
+                </div>
+              )}
             </form>
           </TerminalCard>
 
