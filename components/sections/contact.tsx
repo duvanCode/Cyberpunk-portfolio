@@ -4,7 +4,6 @@ import type React from "react"
 
 import { useState, useEffect } from "react"
 import { personalInfo } from "@/data/personal-info"
-import { references } from "@/data/education"
 import { TerminalCard } from "@/components/ui/terminal-card"
 import { NeonButton } from "@/components/ui/neon-button"
 import { Send, Linkedin, Github, Mail, Phone, User, MessageSquare, CheckCircle, XCircle } from "lucide-react"
@@ -220,19 +219,7 @@ export function Contact() {
               </div>
             </TerminalCard>
 
-            {/* References */}
-            <TerminalCard title="~/contact/references.list">
-              <h3 className="text-lg font-semibold text-[#ffbe0b] mb-4">Referencias</h3>
-              <div className="space-y-3">
-                {references.map((ref) => (
-                  <div key={ref.id} className="p-3 rounded-lg bg-[#0a0e27] border border-[#ffbe0b]/20">
-                    <p className="font-semibold text-foreground">{ref.name}</p>
-                    <p className="text-sm text-[#ff006e]">{ref.role}</p>
-                    <p className="text-xs text-muted-foreground font-mono mt-1">{ref.phone}</p>
-                  </div>
-                ))}
-              </div>
-            </TerminalCard>
+
           </div>
         </div>
       </div>

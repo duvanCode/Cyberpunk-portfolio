@@ -31,35 +31,3 @@ export const education: Education[] = [
     description: "Especialización en gestión y administración de infraestructura de redes",
   },
 ]
-
-export interface Reference {
-  id: number
-  name: string
-  role: string
-  phone: string
-  relationship: string
-}
-
-export const references: Reference[] = [
-  {
-    id: 1,
-    name: "Óscar Garcés",
-    role: "Desarrollador de Software",
-    phone: "+57 302 2229456",
-    relationship: "Colega profesional",
-  },
-  {
-    id: 2,
-    name: "Sergio Vega",
-    role: "Desarrollador Mobile",
-    phone: "+57 304 3707188",
-    relationship: "Colega profesional",
-  },
-  {
-    id: 3,
-    name: "Carlos Montalvo",
-    role: "Desarrollador de Software",
-    phone: "+57 316 8754734",
-    relationship: "Colega profesional",
-  },
-]
